@@ -16,6 +16,6 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
     moveScene() {
         if (this.key == 'playSign') {
             this.parentScene.scene.start('playScene')
-         }
+        }
     }
 }

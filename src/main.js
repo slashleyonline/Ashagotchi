@@ -1,5 +1,5 @@
 // Name: Ashley Seward
-// Title: Postcard Tamagotchi
+// Title: Ashagotchi
 
 //CITATIONS:
 // StateMachine.js from mkelly.me/blog/phaser-finite-state-machine, Thanks Nathan Altice
