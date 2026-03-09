@@ -3,6 +3,10 @@ class Menu extends Phaser.Scene {
         super("menuScene")
     }
 
+    init() {
+        this.CENTER = (game.config.width / 2) - 50
+    }
+
     preload() {
         this.load.path = "./assets/"
         this.load.spritesheet('playButton', 'playButton.png', {
@@ -12,10 +16,11 @@ class Menu extends Phaser.Scene {
     }
 
     create() {
-        this.add.text((game.config.width / 2) - 100, (game.config.height / 2)- 200, "Postcard Tamagotchi", {
+        this.add.text(this.CENTER, (game.config.height / 2)- 200, "Ashagotchi", {
             align: "center"
         })
 
-        //let playButton = new MenuButton(this, 0, 0, 'playButton')
+        let playButton = new MenuButton(this, (game.config.width / 2), 300, 'playButton')
+        playButton.scale = 0.25
     }
 }

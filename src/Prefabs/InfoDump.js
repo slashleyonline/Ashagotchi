@@ -9,6 +9,6 @@ class InfoDump extends Phaser.Physics.Arcade.Sprite {
         this.body.setImmovable()
         this.body.allowGravity = false
 
-        this.exitButton = new ReplayButton(scene, game.config.width * 8/9, game.config.height * 1/9, 'quitButton')
+        //this.exitButton = new ReplayButton(scene, game.config.width * 8/9, game.config.height * 1/9, 'quitButton')
     }
 }
