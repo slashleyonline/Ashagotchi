@@ -17,6 +17,7 @@ class Menu extends Phaser.Scene {
             frameWidth: 640,
             frameHeight: 480
         })
+        this.load.image('shell', 'consoleShellRender.png')
     }
 
     create() {
