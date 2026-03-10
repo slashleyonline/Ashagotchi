@@ -5,6 +5,6 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         //instantiate to scene
         this.parentScene = scene
         this.parentScene.add.existing(this)
-        this.scale = 0.5
+        this.scale = 0.4
     }
 }
