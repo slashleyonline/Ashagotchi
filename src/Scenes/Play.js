@@ -5,8 +5,8 @@ class Play extends Phaser.Scene {
     }
 
     create() {
-        let bg = this.add.image(game.CENTER_X, game.CENTER_Y, 'shell')
-        bg.scale = 1.5
+        this.bgImg = this.add.image(game.CENTER_X, game.CENTER_Y, 'shell')
+        this.bgImg.scale = 1.5
 
         let ash = new Creature(this,game.CENTER_X,game.CENTER_Y,'ashSprite')
         ash.play('idle', true)
@@ -24,7 +24,8 @@ class Play extends Phaser.Scene {
         this.resetDate(this.timeText)
         setInterval(this.resetDate, 1000, this.timeText)
 
-
+        //set of buttons that the player presses to interact with the creature.
+        //inefficient method of assigning scale, will change soon.
         let foodButton = new MenuButton(this, game.CENTER_X -135, 415, 'eatButton')
         foodButton.scale = 1.2
         let sleepButton = new MenuButton(this, game.CENTER_X -50, 413, 'sleepButton')
@@ -33,6 +34,30 @@ class Play extends Phaser.Scene {
         playButton.scale = 1.2
         let statsButton = new MenuButton(this, this.game.CENTER_X + 127, 413, 'statsButton')
         statsButton.scale = 1.2
+
+
+        this.statsLayer = this.add.layer()
+
+        this.healthText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) - 40, "Ashagotchi", {
+            align: "center",
+            color: "pink"
+        })
+        this.hungerText = this.add.text(game.CENTER_X - 120, (game.config.height / 2)- 15, "Ashagotchi", {
+            align: "center",
+            color: "black"
+        })
+        this.sleepText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) + 15, "Ashagotchi", {
+            align: "center",
+            color: "black"
+        })
+        this.happyText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) + 40, "Ashagotchi", {
+            align: "center",
+            color: "pink"
+        })
+
+        this.statsLayer.add([this.healthText, this.hungerText, this.sleepText, this.happyText])
+        this.statsLayer.setVisible(false)
+
     }
 
     //defines and formats the date for the player to see.
@@ -74,5 +99,8 @@ class Play extends Phaser.Scene {
 
     toggleDisplayStats(toggle) {
         //when this button is pressed the stats screen will show up
+        this.creature.visible = toggle
+        this.statsLayer.setVisible(!toggle)
+
     }
 }

@@ -50,9 +50,9 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
                 this.parentScene.replenishStat('happiness', 10)
             })
         }
-        else if (key == 'stateButton') {
+        else if (key == 'statsButton') {
             this.on('pointerdown', () => {
-                this.parentScene.scene.start('menuScene')
+                this.parentScene.toggleDisplayStats(!this.parentScene.creature.visible)
             })
         }
     }
