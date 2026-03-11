@@ -16,14 +16,6 @@ class Play extends Phaser.Scene {
 
         let quitButton = new MenuButton(this, 600, 450, 'quitMenuButton')
 
-        this.time = new Date()
-        this.timeText = this.add.text(game.CENTER_X + 50, (game.config.height / 4), this.time.getHours(), {
-            align: "center",
-            color: "black"
-        })
-        this.resetDate(this.timeText)
-        setInterval(this.resetDate, 1000, this.timeText)
-
         //set of buttons that the player presses to interact with the creature.
         //inefficient method of assigning scale, will change soon.
         let foodButton = new MenuButton(this, game.CENTER_X -135, 415, 'eatButton')
@@ -37,10 +29,11 @@ class Play extends Phaser.Scene {
 
 
         this.statsLayer = this.add.layer()
+        
 
         this.healthText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) - 40, "Ashagotchi", {
             align: "center",
-            color: "pink"
+            color: "black"
         })
         this.hungerText = this.add.text(game.CENTER_X - 120, (game.config.height / 2)- 15, "Ashagotchi", {
             align: "center",
@@ -52,11 +45,30 @@ class Play extends Phaser.Scene {
         })
         this.happyText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) + 40, "Ashagotchi", {
             align: "center",
-            color: "pink"
+            color: "black"
         })
 
         this.statsLayer.add([this.healthText, this.hungerText, this.sleepText, this.happyText])
         this.statsLayer.setVisible(false)
+        this.setStatText()
+
+        console.log(this.creature.getStats())
+
+        this.time = new Date()
+        this.timeText = this.add.text(game.CENTER_X + 50, (game.config.height / 4), this.time.getHours(), {
+            align: "center",
+            color: "black"
+        })
+        this.resetDate(this.timeText)
+        setInterval(this.resetDate, 1000, this.timeText)
+
+        setInterval( () => {
+            let stats = this.creature.getStats()
+            this.healthText.text = stats.health
+            this.hungerText.text = stats.hunger
+            this.happyText.text = stats.happiness
+            this.sleepText.text = stats.sleep
+        })
 
     }
 
@@ -95,6 +107,14 @@ class Play extends Phaser.Scene {
     //amnt should be a positive integer value.
     replenishStat(stat, amnt) {
         this.creature.addToStat(stat, amnt)
+    }
+
+    setStatText() {
+        let stats = this.creature.getStats()
+        this.healthText.text = stats.health
+        this.hungerText.text = stats.hunger
+        this.happyText.text = stats.happiness
+        this.sleepText.text = stats.sleep
     }
 
     toggleDisplayStats(toggle) {

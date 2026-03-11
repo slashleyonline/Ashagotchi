@@ -23,9 +23,10 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
     }
     init() {
             setInterval(() => {
-            this.happiness -= 1
-            this.sleep -= 1
-            this.hunger -= 1
+            
+            this.addToStat('hunger', -1)
+            this.addToStat('sleep', -1)
+            this.addToStat('happiness', -1)
 
             this.resetHealth()
             if (this.health <= 0) {
@@ -35,7 +36,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
 
     }
     resetHealth() {
-        this.health = (this.happiness + this.sleep + this.hunger) / 3
+        this.health = Math.ceil((this.happiness + this.sleep + this.hunger) / 3)
     }
 
     incrementTime() {
@@ -51,17 +52,25 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
 
     addToStat(stat, amnt) {
         console.log('adding ' + amnt + ' to ' + stat)
-        if ((stat == 'hunger') && ( (this.hunger + amnt) < 100)) {
+        if ((stat == 'hunger') && ( (this.hunger + amnt) < 100) && !(this.hunger <= 0)) {
             this.hunger += amnt
         }
-        else if ((stat == 'sleep') && ( (this.sleep + amnt) < 100)) {
+        else if ((stat == 'sleep') && ( (this.sleep + amnt) < 100) && !(this.sleep <= 0)) {
             this.sleep += amnt
         }
-        else if ((stat == 'happiness') && ( (this.happiness + amnt) < 100)) {
+        else if ((stat == 'happiness') && ( (this.happiness + amnt) < 100) && !(this.happiness <= 0)) {
             this.happiness += amnt
         }
 
         this.resetHealth()
+    }
+    getStats() {
+        return {
+            health: this.health,
+            hunger: this.hunger,
+            happiness: this.happiness,
+            sleep: this.sleep
+        }
     }
     
 }
