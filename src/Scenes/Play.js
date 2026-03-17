@@ -5,14 +5,21 @@ class Play extends Phaser.Scene {
     }
 
     create() {
+        //make sure that audio is not paused when minimized
+        this.sound.pauseOnBlur = false
+
         this.add.image(game.CENTER_X, game.CENTER_Y, 'background')
         this.console = this.add.image(game.CENTER_X, game.CENTER_Y, 'shell')
         this.console.scale = 1.5
+
+        //add creature to game
 
         this.creature = new Creature(this,game.CENTER_X,game.CENTER_Y,'ashSprite')
         let ash = this.creature
         ash.init()
 
+
+        //button for restarting the game
         let quitButton = new MenuButton(this, 540, 20, 'quitMenuButton')
         quitButton.scale = 0.55
 
@@ -28,6 +35,8 @@ class Play extends Phaser.Scene {
         statsButton.scale = 1.2
 
 
+
+        //set up layer for creature stats
         this.statsLayer = this.add.layer()
         
         let textConfig = {
@@ -48,15 +57,14 @@ class Play extends Phaser.Scene {
 
         this.statsLayer.add([this.healthText, this.hungerText, this.sleepText, this.happyText])
         this.statsLayer.setVisible(false)
-
         this.setStatText(this.creature, this.statsText)
 
+        //set up clock for incrementing stats
         this.time = new Date()
         let timeText = this.add.text(game.CENTER_X + 50, (game.config.height / 4), this.time.getHours(), {
             align: "center",
             color: "black"
         })
-
         this.resetDate(timeText)
         
         this.resetInterval = setInterval(this.resetDate, 1000, timeText)

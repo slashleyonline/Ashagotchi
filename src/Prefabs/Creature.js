@@ -15,10 +15,10 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.happiness = 50
         //increases gradually but the rate of increasing is maintained by playing with creature
 
-        this.sleep = 42
+        this.sleep = 20
         //refilled by sleeping
         
-        this.hunger = 20
+        this.hunger = 50
         //refilled by eating
 
 
@@ -59,6 +59,11 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             decision: new DecisionState(),
             reveal: new RevealState()
         }, [scene, this])
+
+        this.parentScene.sleepFSM = new StateMachine('awake', {
+            sleeping: new SleepState(),
+            awake: new AwakeState()
+        }, [scene, this])
     }
 
     init() {
@@ -92,7 +97,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
     }
 
     actionState(stat) {
-        if (this.parentScene.rpsFSM.state != 'decision'){
+        if ((this.parentScene.rpsFSM.state != 'decision') && (this.parentScene.sleepFSM.state != 'awake')) {
             //If the FSM is in idle or need state, move to eating state.
             if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
                 if (stat == 'hunger') {
@@ -107,7 +112,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             }
         }
         //if the rock paper scissors game is being played, transition to the reveal with a given answer.
-        else {
+        else if ((this.parentScene.rpsFSM.state == 'decision')) {
             this.parentScene.rpsFSM.transition('reveal', stat)
         }
     }
@@ -189,11 +194,14 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
 class IdleState extends State {
     enter(scene, creature) {
         creature.play('idle', true)
-        creature.busy = false
         creature.thoughtsVisible(false)
 
-        scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        setTimeout(() => {
+            creature.busy = false
 
+        }, 2000);
+
+            scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
     }
     execute(scene, creature) {
         //if health reaches 0, move to gameOverState
@@ -227,24 +235,19 @@ class NeedState extends State {
             creature.sleepyIcon.visible = true
         }
 
-        creature.on('animationcomplete', () => {
-            scene.creatureFSM.transition('idle')
-        })
+        creature.animEvent = () =>{ scene.creatureFSM.transition('idle')} 
+        creature.resetanim = creature.on('animationcomplete', creature.animEvent)
+        
     }
+    
 }
 class SleepingState extends State {
     enter(scene, creature) {
-        creature.thoughtsVisible(false)
-
-        console.log('sleeping')
-        creature.busy = true
-
-        creature.addToStat('sleep', 25)
-        scene.creatureFSM.transition('idle')
-
+        scene.sleepFSM.transition('sleeping')
+        game.sound.mute = true
     }
-    execute(scene, creature) {
-        
+    update() {
+        console.log(creatureFSM.state)
     }
 }
 class EatingState extends State {
@@ -372,9 +375,9 @@ class RevealState extends State {
 
         this.destroyIcons(scene)
 
+        game.sound.mute = false
         scene.rpsFSM.transition('disabled')
         scene.creatureFSM.transition('idle')
-
     }
     compareChoices(choice, ashChoice){
         if (choice == ashChoice) {
@@ -412,4 +415,29 @@ class RevealState extends State {
     }
 }
 
+class SleepState extends State {
+    enter(scene, creature) {
+        creature.thoughtsVisible(false)
+
+        creature.busy = true
+        creature.isAwake = false
+
+        let blackScreen = scene.add.image(game.CENTER_X, game.CENTER_Y, 'blackScreen')
+        blackScreen.scale = 1.5
+
+        
+        setTimeout(() => {
+            creature.isBusy = false
+            creature.addToStat('sleep', 25)
+            blackScreen.destroy()
+            scene.creatureFSM.transition('idle')
+        }, 20000);
+    }
+}
+
+class AwakeState extends State {
+    enter(scene, creature) {
+
+    }
+}
 //need fsm for sleep mode
