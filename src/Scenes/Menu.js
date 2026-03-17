@@ -87,7 +87,7 @@ class Menu extends Phaser.Scene {
         this.console.on('animationcomplete', () => {
                 setTimeout(() => {
                     this.scene.start('playScene')
-                }, 2000);
+                }, 1000);
         })
     }
 }

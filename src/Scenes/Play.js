@@ -11,7 +11,6 @@ class Play extends Phaser.Scene {
 
         this.creature = new Creature(this,game.CENTER_X,game.CENTER_Y,'ashSprite')
         let ash = this.creature
-        ash.play('idle', true)
         ash.init()
 
         let quitButton = new MenuButton(this, 600, 450, 'quitMenuButton')
@@ -122,5 +121,9 @@ class Play extends Phaser.Scene {
         clearInterval(this.textInterval)
         clearInterval(this.creature.incrementInterval)
         this.creature.destroy()
+    }
+    
+    update() {
+        this.creatureFSM.step()
     }
 }

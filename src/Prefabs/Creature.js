@@ -20,6 +20,16 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         
         this.hunger = 20
         //refilled by eating
+
+        this.parentScene.creatureFSM = new StateMachine('idle', {
+            idle: new IdleState(),
+            need: new NeedState(),
+            sleeping: new SleepingState(),
+            eating: new EatingState(),
+            playing: new PlayingState(),
+            gameOver: new GameOverState(),
+        }, [scene, this])
+        //FSM for determining what state the creature is in.
     }
 
     init() {
@@ -76,4 +86,56 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         }
     }
     
+}
+
+class IdleState extends State {
+    enter(scene, creature) {
+        console.log('in idle!')
+        creature.play('idle', true)
+    }
+    execute(scene, creature) {
+        //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
+        //if eat, sleep, play buttons are pressed, pause stat decremation and move to the corresponding action state.
+        //if health reaches 0, move to gameOverState
+    }
+}
+class NeedState extends State {
+    enter(scene, creature) {
+
+    }
+    execute(scene, creature) {
+        
+    }
+}
+class SleepingState extends State {
+    enter(scene, creature) {
+
+    }
+    execute(scene, creature) {
+        
+    }
+}
+class EatingState extends State {
+    enter(scene, creature) {
+
+    }
+    execute(scene, creature) {
+        
+    }
+}
+class PlayingState extends State {
+    enter(scene, creature) {
+
+    }
+    execute(scene, creature) {
+        
+    }
+}
+class GameOverState extends State {
+    enter(scene, creature) {
+
+    }
+    execute(scene, creature) {
+        
+    }
 }
