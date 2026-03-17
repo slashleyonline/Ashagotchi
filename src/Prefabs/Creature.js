@@ -12,10 +12,10 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         //the average of all stats
         //if it reaches 0, game over
 
-        this.happiness = 50
+        this.happiness = 30
         //increases gradually but the rate of increasing is maintained by playing with creature
 
-        this.sleep = 20
+        this.sleep = 50
         //refilled by sleeping
         
         this.hunger = 50
@@ -83,6 +83,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
     }
 
     actionState(stat) {
+        this.thoughtsVisible(false)
         if ((this.parentScene.rpsFSM.state != 'decision') && (this.parentScene.sleepFSM.state != 'awake')) {
             //If the FSM is in idle or need state, move to whichever action is needed.
             if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
@@ -343,11 +344,11 @@ class RevealState extends State {
         
         scene.resultIcon = ''
 
-        if (result == 5) {
+        if (result == 10) {
             scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'tie')
 
         }
-        else if (result == 0 ) {
+        else if (result == 5 ) {
             scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'youLose')
         }
         else {
@@ -367,10 +368,10 @@ class RevealState extends State {
         }
         else if (choice == 'rock') {
             if (ashChoice == 'paper') {
-                return 5
+                return 25
             }
             else {
-                return 25
+                return 5
             }
         }
         else if (choice == 'paper') {

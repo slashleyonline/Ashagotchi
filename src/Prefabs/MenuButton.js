@@ -21,6 +21,7 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
         this.on('pointerdown', () => { 
             scene.sound.play('press')
         })
+        
 
     }
 
@@ -67,12 +68,20 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
                 this.parentScene.finalMessage.closeButton.visible = true
             })
         }
-        else if (key == 'exit') {
+        else if (key == 'helpButton') {
             this.on('pointerdown', () => {
-                this.visible = false
-                this.parentScene.finalMessage.visible = false
+                this.parentScene.help.visible = true
+                this.parentScene.help.closeButton.visible = true
             })
         }
+        else if (key == 'Credits') {
+            this.on('pointerdown', () => {
+                this.parentScene.credits.visible = true
+                this.parentScene.credits.closeButton.visible = true
+            })
+        }
+        
     }
-
+    
 }
+

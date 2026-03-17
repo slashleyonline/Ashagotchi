@@ -35,6 +35,14 @@ class Play extends Phaser.Scene {
         statsButton.scale = 1.2
 
 
+        this.credits = new InfoDump(this, game.CENTER_X, game.CENTER_Y, 'creditsMessage')
+        this.help = new InfoDump (this, this.game.CENTER_X, this.game.CENTER_Y, 'helpMessage' )
+
+        this.creditsButton = new MenuButton (this, 550, 460, 'Credits')
+        this.creditsButton.scale = .5
+
+        this.helpButton = new MenuButton (this, 90, 20, 'helpButton')
+
 
         //set up layer for creature stats
         this.statsLayer = this.add.layer()

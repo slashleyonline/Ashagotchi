@@ -76,6 +76,12 @@ class Menu extends Phaser.Scene {
         this.load.image('shell', 'consoleShellRender.png')
         this.load.image('youWin', 'UI/youWin.png')
         this.load.image('youLose', 'UI/youLose.png')
+        this.load.image('Credits', 'UI/Credits.png')
+        this.load.image('creditsMessage', 'UI/creditsMessage.png')
+        this.load.image('helpMessage', 'UI/helpMessage.png')
+        this.load.image('helpButton', 'UI/helpButton.png')
+
+
         this.load.image('tie', 'UI/Tie.png')
         this.load.image('rockIcon', 'UI/rock.png')
         this.load.image('paperIcon', 'UI/paper.png')
