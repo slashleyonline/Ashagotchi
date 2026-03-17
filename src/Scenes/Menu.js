@@ -45,6 +45,16 @@ class Menu extends Phaser.Scene {
             frameWidth: 655,
             frameHeight: 548
         })
+        this.load.spritesheet('message', 'UI/Message.png', {
+            frameWidth: 400,
+            frameHeight: 300
+        })
+        this.load.spritesheet('letter', 'UI/letter.png', {
+            frameWidth: 20
+        })
+        this.load.spritesheet('exit', 'UI/Exit.png', {
+            frameWidth: 20
+        })
 
         this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
         this.load.image('hungryThought', 'UI/burger.png')

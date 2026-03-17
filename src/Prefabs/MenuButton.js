@@ -60,6 +60,19 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
                 this.parentScene.toggleDisplayStats(!this.parentScene.creature.visible)
             })
         }
+        else if (key == 'letter') {
+            this.on('pointerdown', () => {
+                this.visible = false
+                this.parentScene.finalMessage.visible = true
+                this.parentScene.finalMessage.closeButton.visible = true
+            })
+        }
+        else if (key == 'exit') {
+            this.on('pointerdown', () => {
+                this.visible = false
+                this.parentScene.finalMessage.visible = false
+            })
+        }
     }
 
 }
