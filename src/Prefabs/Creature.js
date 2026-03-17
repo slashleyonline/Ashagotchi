@@ -12,7 +12,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         //the average of all stats
         //if it reaches 0, game over
 
-        this.happiness = 31
+        this.happiness = 10
         //increases gradually but the rate of increasing is maintained by playing with creature
 
         this.sleep = 32
@@ -161,13 +161,15 @@ class IdleState extends State {
         creature.playIcon.visible = false
         creature.sleepyIcon.visible = false
 
-        scene.creatureFSM.transition('win')
-
     }
     execute(scene, creature) {
         //if health reaches 0, move to gameOverState
         if (creature.health == 0) {
             scene.creatureFSM.transition('gameOver')
+        }
+
+        if (creature.happiness > 80) { 
+            scene.creatureFSM.transition('win')
         }
 
         //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
