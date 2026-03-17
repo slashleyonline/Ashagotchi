@@ -37,7 +37,12 @@ class Menu extends Phaser.Scene {
             frameWidth: 640,
             frameHeight: 548
         })
+        
         this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
+        this.load.image('hungryThought', 'UI/burger.png')
+        this.load.image('sleepyThought', 'UI/sleepIcon.png')
+        this.load.image('playThought', 'UI/rockpaperscissors.png')
+
         this.load.image('background', 'background/FiRoom.png')
         this.load.image('box_front', 'Box/box_front_sprite.png')
         this.load.image('shell', 'consoleShellRender.png')

@@ -18,7 +18,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.sleep = 100
         //refilled by sleeping
         
-        this.hunger = 20
+        this.hunger = 40
         //refilled by eating
 
 
@@ -27,7 +27,17 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
 
         this.thoughtBubble = this.scene.add.image(game.CENTER_X + 60, game.CENTER_Y - 70, 'thoughtBubble')
         this.thoughtBubble.scale = 2
-        this.thoughtBubble.visible = false
+        //this.thoughtBubble.visible = false
+
+        //add icons that display when need state is entered
+        this.hungryIcon = this.scene.add.image(game.CENTER_X + 58, game.CENTER_Y - 83, 'hungryThought')
+        this.hungryIcon.visible = false
+
+        this.sleepyIcon = this.scene.add.image(game.CENTER_X + 60, game.CENTER_Y - 83, 'sleepyThought')
+        this.sleepyIcon.visible = false
+
+        this.playIcon = this.scene.add.image(game.CENTER_X + 60, game.CENTER_Y - 83, 'playThought')
+        this.playIcon.visible = false
 
         this.parentScene.creatureFSM = new StateMachine('idle', {
             idle: new IdleState(),
@@ -140,6 +150,11 @@ class IdleState extends State {
         creature.play('idle', true)
         creature.busy = false
         creature.thoughtBubble.visible = false
+
+        creature.hungryIcon.visible = false
+        creature.playIcon.visible = false
+        creature.sleepyIcon.visible = false
+
     }
     execute(scene, creature) {
         //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
@@ -157,13 +172,19 @@ class NeedState extends State {
         creature.play('needing', true)
         creature.thoughtBubble.visible = true
 
+        if (needType == 'hunger') {
+            creature.hungryIcon.visible = true
+        }
+        else if (needType == 'happiness') {
+            creature.playIcon.visible = true
+        }
+        else {
+            creature.sleepyIcon.visible = true
+        }
+
         creature.on('animationcomplete', () => {
             scene.creatureFSM.transition('idle', creature.getLowestStat())
         })
-
-    }
-    execute(scene, creature) {
-        
     }
 }
 class SleepingState extends State {
