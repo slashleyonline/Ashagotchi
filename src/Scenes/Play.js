@@ -8,12 +8,10 @@ class Play extends Phaser.Scene {
         this.bgImg = this.add.image(game.CENTER_X, game.CENTER_Y, 'shell')
         this.bgImg.scale = 1.5
 
-        this.creature = new Creature(this,game.CENTER_X,game.CENTER_Y,'ashSprite')
-        let ash = this.creature
+        let ash = new Creature(this,game.CENTER_X,game.CENTER_Y,'ashSprite')
+        this.creature = ash
         ash.play('idle', true)
         ash.init()
-
-        this.creature = ash
 
         let quitButton = new MenuButton(this, 600, 450, 'quitMenuButton')
 
@@ -31,9 +29,6 @@ class Play extends Phaser.Scene {
 
         this.statsLayer = this.add.layer()
         
-
-
-
         let textConfig = {
             align: "center",
             color: "black"
@@ -43,7 +38,7 @@ class Play extends Phaser.Scene {
         this.sleepText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) + 15, "Ashagotchi", textConfig)
         this.happyText = this.add.text(game.CENTER_X - 120, (game.config.height / 2) + 40, "Ashagotchi", textConfig)
 
-        this.statsText = {
+        let statsText = {
             health: this.healthText,
             hunger: this.hungerText,
             sleep: this.sleepText,
@@ -52,17 +47,19 @@ class Play extends Phaser.Scene {
 
         this.statsLayer.add([this.healthText, this.hungerText, this.sleepText, this.happyText])
         this.statsLayer.setVisible(false)
-        this.setStatText(this.creature, this.statsText)
+
+        this.setStatText(ash, statsText)
 
         this.time = new Date()
-        this.timeText = this.add.text(game.CENTER_X + 50, (game.config.height / 4), this.time.getHours(), {
+        let timeText = this.add.text(game.CENTER_X + 50, (game.config.height / 4), this.time.getHours(), {
             align: "center",
             color: "black"
         })
 
-        this.resetDate(this.timeText)
-        setInterval(this.resetDate, 1000, this.timeText)
-        setInterval(this.setStatText, 1000, this.creature, this.statsText)
+        this.resetDate(timeText)
+        
+        this.resetInterval = setInterval(this.resetDate, 1000, timeText)
+        this.textInterval = setInterval(this.setStatText, 1000, ash, statsText)
 
     }
 
@@ -117,5 +114,10 @@ class Play extends Phaser.Scene {
         this.creature.visible = toggle
         this.statsLayer.setVisible(!toggle)
 
+    }
+
+    clearIntervals() {
+        clearInterval(this.resetInterval)
+        clearInterval(this.textInterval)
     }
 }

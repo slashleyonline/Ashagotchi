@@ -36,8 +36,7 @@ class MenuButton extends Phaser.Physics.Arcade.Sprite {
         }
         else if (key == 'quitMenuButton') {
             this.on('pointerdown', () => {
-                //clearInterval(this.parentScene.setStatText)
-                //clearInterval(this.parentScene.resetDate)
+                this.parentScene.clearIntervals()
                 this.parentScene.scene.start('menuScene')
             })
         }
