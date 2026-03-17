@@ -33,6 +33,11 @@ class Menu extends Phaser.Scene {
             frameWidth: 655,
             frameHeight: 480
         })
+        this.load.spritesheet('needing', 'Ash/needing.png', {
+            frameWidth: 640,
+            frameHeight: 548
+        })
+        this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
         this.load.image('background', 'background/FiRoom.png')
         this.load.image('box_front', 'Box/box_front_sprite.png')
         this.load.image('shell', 'consoleShellRender.png')
@@ -58,6 +63,15 @@ class Menu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('playMenuButton', {
                 start: 0,
                 end: 24
+            })
+        })
+        this.anims.create({
+            key: 'needing',
+            frameRate: 2,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('needing', {
+                start: 0,
+                end: 1
             })
         })
         this.anims.create({
