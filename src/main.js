@@ -7,6 +7,14 @@
 
 //NOTE: TO SKIP TO END PORTION, PRESS H WHEN ASH HAS NO THOUGHT BUBBLE.
 
+// COMPONENTS LIST:
+
+// Liberal use of spritesheets and animations.
+// Timers and intervals playing a key role in gameplay
+// Use of Physics systems for user input
+// Use of Sound
+// Layer Manipulation
+
 // CREATIVE TILT:
 //      I decided that I didn't want to make a "game", and focused more on making something akin to a desktop pet. I enjoyed learning how to make a 
 // game that was dependent on real-world time, and I had fun doing research on Tamagotchi, doing my best to recreate their style. I also spent 
