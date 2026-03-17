@@ -13,7 +13,8 @@ class Play extends Phaser.Scene {
         let ash = this.creature
         ash.init()
 
-        let quitButton = new MenuButton(this, 600, 450, 'quitMenuButton')
+        let quitButton = new MenuButton(this, 540, 20, 'quitMenuButton')
+        quitButton.scale = 0.6
 
         //set of buttons that the player presses to interact with the creature.
         //inefficient method of assigning scale, will change soon.
@@ -98,6 +99,7 @@ class Play extends Phaser.Scene {
     //amnt should be a positive integer value.
     replenishStat(stat, amnt) {
         this.creature.addToStat(stat, amnt)
+        this.creature.actionState()
         this.setStatText(this.creature, this.statsText)
     }
 
@@ -122,7 +124,7 @@ class Play extends Phaser.Scene {
         clearInterval(this.creature.incrementInterval)
         this.creature.destroy()
     }
-    
+
     update() {
         this.creatureFSM.step()
     }

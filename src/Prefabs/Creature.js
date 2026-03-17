@@ -7,18 +7,18 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.parentScene.add.existing(this)
         this.scale = 0.4
 
-        this.health = 100
+        this.health = 0
         //overall health of the creature
         //the average of all stats
         //if it reaches 0, game over
 
-        this.happiness = 10
+        this.happiness = 0
         //increases gradually but the rate of increasing is maintained by playing with creature
 
-        this.sleep = 100
+        this.sleep = 0
         //refilled by sleeping
         
-        this.hunger = 40
+        this.hunger = 0
         //refilled by eating
 
 
@@ -39,6 +39,8 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.playIcon = this.scene.add.image(game.CENTER_X + 60, game.CENTER_Y - 83, 'playThought')
         this.playIcon.visible = false
 
+
+        
         this.parentScene.creatureFSM = new StateMachine('idle', {
             idle: new IdleState(),
             need: new NeedState(),
@@ -80,6 +82,21 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
+    actionState() {
+        //If the FSM is in idle or need state, move to eating state.
+        if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
+            this.parentScene.creatureFSM.transition('eating')
+        }
+        //If the FSM is in idle or need state, move to sleeping state.
+        else if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
+            this.parentScene.creatureFSM.transition('sleeping')
+         }
+        //If the FSM is in idle or need state, move to playing state.
+        else if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
+            this.parentScene.creatureFSM.transition('playing')
+        }
+    }
+
     addToStat(stat, amnt) {
         if (!this.busy) {
             //console.log('adding ' + amnt + ' to ' + stat)
@@ -90,33 +107,18 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
                 }
                 this.hunger += amnt
 
-                //If the FSM is in idle or need state, move to eating state.
-                if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-                    this.parentScene.creatureFSM.transition('eating')
-                }
-
             }
             else if ((stat == 'sleep') && ( (this.sleep + amnt) < 100) && !(this.health <= 0)) {
                 if (amnt < 0 && this.sleep <=0) {
                     return
                 }
                 this.sleep += amnt
-
-                //If the FSM is in idle or need state, move to sleeping state.
-                if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-                    this.parentScene.creatureFSM.transition('sleeping')
-                }
             }
             else if ((stat == 'happiness') && ( (this.happiness + amnt) < 100) && !(this.health <= 0)) {
                 if (amnt < 0 && this.happiness <=0) {
                     return
                 }
                 this.happiness += amnt
-
-                //If the FSM is in idle or need state, move to playing state.
-                if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-                    this.parentScene.creatureFSM.transition('playing')
-                }
             }
 
             this.resetHealth()
@@ -157,13 +159,14 @@ class IdleState extends State {
 
     }
     execute(scene, creature) {
-        //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
-        if ((creature.hunger < 30) || (creature.sleep < 30) || (creature.happiness < 30)) {
-            scene.creatureFSM.transition('need', creature.getLowestStat())
-        }
         //if health reaches 0, move to gameOverState
-        if (this.health == 0) {
+        if (creature.health == 0) {
             scene.creatureFSM.transition('gameOver')
+        }
+
+        //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
+        if (((creature.hunger < 30) || (creature.sleep < 30) || (creature.happiness < 30)) && creature.health != 0){
+            scene.creatureFSM.transition('need', creature.getLowestStat())
         }
     }
 }
@@ -218,6 +221,9 @@ class PlayingState extends State {
 }
 class GameOverState extends State {
     enter(scene, creature) {
-        creature.busy = true
+        creature.anims.stop()
+        creature.play('dead', true)
+
+        scene.add.image(game.CENTER_X, game.CENTER_Y - 55, 'gameOverText')
     }
 }

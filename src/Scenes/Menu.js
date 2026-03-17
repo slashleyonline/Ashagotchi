@@ -9,9 +9,9 @@ class Menu extends Phaser.Scene {
             frameWidth: 224,
             frameHeight: 209
         })
-        this.load.spritesheet('quitMenuButton', 'Buttons/quitMenuButton.png', {
-            frameWidth: 303,
-            frameHeight: 175
+        this.load.spritesheet('quitMenuButton', 'UI/restartButton.png', {
+            frameWidth: 300,
+            frameHeight: 49
         })
         this.load.spritesheet('ashSprite', 'Ash/AshSpritesheet.png', {
             frameWidth: 640,
@@ -37,11 +37,18 @@ class Menu extends Phaser.Scene {
             frameWidth: 640,
             frameHeight: 548
         })
-        
+
+        this.load.spritesheet('dead', 'Ash/dead.png', {
+            frameWidth: 640,
+            frameHeight: 548
+        })
+
         this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
         this.load.image('hungryThought', 'UI/burger.png')
         this.load.image('sleepyThought', 'UI/sleepIcon.png')
         this.load.image('playThought', 'UI/rockpaperscissors.png')
+        this.load.image('gameOverText', 'UI/GameOverText.png')
+        this.load.image('gameOverText', 'UI/restartButton.png')
 
         this.load.image('background', 'background/FiRoom.png')
         this.load.image('box_front', 'Box/box_front_sprite.png')
@@ -58,6 +65,15 @@ class Menu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('ashSprite', {
                 start: 0,
                 end: 1
+            })
+        })
+        this.anims.create({
+            key: 'dead',
+            frameRate: 1,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('dead', {
+                start: 0,
+                end:0
             })
         })
         this.anims.create({
@@ -90,6 +106,8 @@ class Menu extends Phaser.Scene {
             })
         })
         
+
+        //set up visuals
         this.add.image(game.CENTER_X, game.CENTER_Y, 'background')
 
         this.add.text(game.CENTER_X - 50, (game.config.height / 2)- 200, "Ashagotchi", {
