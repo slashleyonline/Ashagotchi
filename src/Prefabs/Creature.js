@@ -40,7 +40,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.playIcon.visible = false
 
 
-
+        this.canPlayAgain = true
 
         
         this.parentScene.creatureFSM = new StateMachine('idle', {
@@ -119,7 +119,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
                 }
                 this.sleep += amnt
             }
-            else if ((stat == 'happiness') && ( (this.happiness + amnt) < 100) && !(this.health <= 0)) {
+            else if ((stat == 'happiness') && !(this.health <= 0)) {
                 if (amnt < 0 && this.happiness <=0) {
                     return
                 }
@@ -129,6 +129,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             this.resetHealth()
         }
     }
+
     getStats() {
         return {
             health: this.health,
@@ -181,12 +182,9 @@ class IdleState extends State {
         creature.play('idle', true)
         creature.thoughtsVisible(false)
 
-        setTimeout(() => {
-            creature.busy = false
+        game.sound.mute = false
 
-        }, 2000);
-
-            scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+        scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
     }
     execute(scene, creature) {
         //if health reaches 0, move to gameOverState
@@ -194,13 +192,12 @@ class IdleState extends State {
             scene.creatureFSM.transition('gameOver')
         }
 
-
-        if (Phaser.Input.Keyboard.JustDown(scene.hKey) || (creature.happiness > 80)) { 
+        if (Phaser.Input.Keyboard.JustDown(scene.hKey) || (creature.happiness > 90)) { 
             scene.creatureFSM.transition('win')
         }
 
         //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
-        if (((creature.hunger <= 40) || (creature.sleep < 30) || (creature.happiness < 30)) && creature.health != 0){
+        if (((creature.hunger <= 40) || (creature.sleep < 30) || ((creature.happiness < 30) && (creature.canPlayAgain))) && creature.health != 0){
             scene.creatureFSM.transition('need', creature.getLowestStat())
         }
     }
@@ -335,10 +332,12 @@ class RevealState extends State {
         //compare player's choice with random choice
         let result = this.compareChoices(choice, ashChoice)
 
-        scene.ashIcon = scene.add.image(game.CENTER_X  - 100, game.CENTER_Y  - 40, ashChoice + 'Icon')
+        scene.ashIcon = scene.add.image(game.CENTER_X  - 100, game.CENTER_Y  - 80, ashChoice + 'Icon')
         scene.ashIcon.scale = 3
         
         creature.play('idle', true)
+
+        creature.busy = false
 
         creature.addToStat('happiness', result)
         
@@ -354,11 +353,17 @@ class RevealState extends State {
         else {
             scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'youWin')
         }
-        game.sound.mute = false
+
+        this.canPlayAgain = false
 
         setTimeout(() => {
             this.destroyIcons(scene)
             scene.rpsFSM.transition('disabled')
+
+            setTimeout(() => {
+                this.canPlayAgain = true
+                }, 10000);
+
             scene.creatureFSM.transition('idle')
         }, 3000);
     }

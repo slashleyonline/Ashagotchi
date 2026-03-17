@@ -3,9 +3,12 @@
 
 // CITATIONS:
 // StateMachine.js from mkelly.me/blog/phaser-finite-state-machine, Thanks Nathan Altice
-//
+// AUDIONUGGET FONT BY JapanYoshi https://fontesk.com/audio-nugget-font/
 
 //NOTE: TO SKIP TO END PORTION, PRESS H WHEN ASH HAS NO THOUGHT BUBBLE.
+
+// CREATIVE TILT:
+// This one is less of a "game" and more like a desktop pet. I enjoyed learning about
 
 let config = {
     type: Phaser.AUTO,
