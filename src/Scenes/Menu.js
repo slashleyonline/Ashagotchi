@@ -73,6 +73,7 @@ class Menu extends Phaser.Scene {
         this.load.audio('playful', 'Sounds/Playful.wav')
         this.load.audio('sleepy', 'Sounds/Sleepy.wav')
         this.load.audio('press', 'Sounds/Press.wav')
+        this.load.audio('winGame', 'Sounds/winGame.wav')
     }
 
     create() {

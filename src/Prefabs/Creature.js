@@ -234,14 +234,16 @@ class GameOverState extends State {
 class WinState extends State {
     enter(scene, creature) {
         creature.busy = true
-        let winText = scene.add.image(game.CENTER_X - 90, game.CENTER_Y - 110, 'youWin')
-        winText.scale = 0.25
+        scene.winText = scene.add.image(game.CENTER_X - 90, game.CENTER_Y - 110, 'youWin')
+        scene.winText.scale = 0.25
         creature.play('winDance')
 
         scene.finalMessage = new InfoDump(scene, game.CENTER_X, game.CENTER_Y, 'message')
         scene.finalMessage.visible = false
 
         scene.letter = new MenuButton(scene, game.CENTER_X, game.CENTER_Y - 100, 'letter')
-        letter.scale = 2
+        scene.letter.scale = 2
+
+        scene.sound.play('winGame')
     }
 }
