@@ -12,13 +12,13 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         //the average of all stats
         //if it reaches 0, game over
 
-        this.happiness = 10
+        this.happiness = 50
         //increases gradually but the rate of increasing is maintained by playing with creature
 
-        this.sleep = 32
+        this.sleep = 42
         //refilled by sleeping
         
-        this.hunger = 33
+        this.hunger = 20
         //refilled by eating
 
 
@@ -83,24 +83,24 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         }
     }
 
-    actionState() {
+    actionState(stat) {
         //If the FSM is in idle or need state, move to eating state.
         if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-            this.parentScene.creatureFSM.transition('eating')
-        }
-        //If the FSM is in idle or need state, move to sleeping state.
-        else if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-            this.parentScene.creatureFSM.transition('sleeping')
-         }
-        //If the FSM is in idle or need state, move to playing state.
-        else if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-            this.parentScene.creatureFSM.transition('playing')
+            if (stat == 'hunger') {
+                this.parentScene.creatureFSM.transition('eating')
+            }
+            else if (stat == 'sleep') {
+                this.parentScene.creatureFSM.transition('sleeping')
+            }
+            else {
+                this.parentScene.creatureFSM.transition('playing')
+            }
         }
     }
 
     addToStat(stat, amnt) {
         if (!this.busy) {
-            //console.log('adding ' + amnt + ' to ' + stat)
+            console.log('adding ' + amnt + ' to ' + stat)
             //console.log('FSM state: ', this.parentScene.creatureFSM.state)
             if ((stat == 'hunger') && ( (this.hunger + amnt) < 100) && !(this.health <= 0)) {
                 if (amnt < 0 && this.hunger <=0) {
@@ -194,7 +194,7 @@ class NeedState extends State {
         }
 
         creature.on('animationcomplete', () => {
-            scene.creatureFSM.transition('idle', creature.getLowestStat())
+            scene.creatureFSM.transition('idle')
         })
     }
 }
@@ -202,7 +202,9 @@ class SleepingState extends State {
     enter(scene, creature) {
         console.log('sleeping')
         creature.busy = true
-        scene.creatureFSM.transition('idle', creature.getLowestStat())
+
+        creature.addToStat('sleep', 25)
+        scene.creatureFSM.transition('idle')
 
     }
     execute(scene, creature) {
@@ -211,8 +213,19 @@ class SleepingState extends State {
 }
 class EatingState extends State {
     enter(scene, creature) {
-        creature.busy = true
-        scene.creatureFSM.transition('idle', creature.getLowestStat())
+        if ((creature.hunger + 25) < 100){
+            creature.addToStat('hunger', 25)
+            creature.busy = true
+            creature.play('eating')
+            console.log('eat')
+        
+            creature.on('animationcomplete', () => {
+                scene.creatureFSM.transition('idle')
+            })
+        }
+        else {
+            scene.creatureFSM.transition('idle')
+        }
     }
     execute(scene, creature) {
         
@@ -221,6 +234,7 @@ class EatingState extends State {
 class PlayingState extends State {
     enter(scene, creature) {
         creature.busy = true
+        creature.addToStat('happiness', 25)
         scene.creatureFSM.transition('idle', creature.getLowestStat())
     }
 }
@@ -249,3 +263,13 @@ class WinState extends State {
         scene.sound.play('winGame')
     }
 }
+
+//need new fsm for playing rock paper scissors
+
+//not playing, default state
+
+//Deciding - prompting the player to pick an option
+
+//Reveal - reveal who won, and add points
+
+//End State

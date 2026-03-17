@@ -55,6 +55,10 @@ class Menu extends Phaser.Scene {
         this.load.spritesheet('exit', 'UI/Exit.png', {
             frameWidth: 20
         })
+        this.load.spritesheet('eating', 'Ash/eating.png', {
+            frameWidth: 655,
+            frameHeight: 548
+        })
 
         this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
         this.load.image('hungryThought', 'UI/burger.png')
@@ -103,6 +107,15 @@ class Menu extends Phaser.Scene {
             frames: this.anims.generateFrameNumbers('winDance', {
                 start: 0,
                 end:3
+            })
+        })
+        this.anims.create({
+            key: 'eating',
+            frameRate: 6,
+            repeat: 0,
+            frames: this.anims.generateFrameNumbers('eating', {
+                start: 0,
+                end: 5
             })
         })
         this.anims.create({

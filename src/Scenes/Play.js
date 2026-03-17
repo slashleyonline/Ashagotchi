@@ -98,8 +98,7 @@ class Play extends Phaser.Scene {
     //acceptable values for stat include: 'hunger', 'sleep', and 'happiness'
     //amnt should be a positive integer value.
     replenishStat(stat, amnt) {
-        this.creature.addToStat(stat, amnt)
-        this.creature.actionState()
+        this.creature.actionState(stat)
         this.setStatText(this.creature, this.statsText)
     }
 
