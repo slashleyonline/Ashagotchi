@@ -51,6 +51,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             win: new WinState()
         }, [scene, this])
         //FSM for determining what state the creature is in.
+
     }
 
     init() {
@@ -161,6 +162,8 @@ class IdleState extends State {
         creature.playIcon.visible = false
         creature.sleepyIcon.visible = false
 
+        scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
+
     }
     execute(scene, creature) {
         //if health reaches 0, move to gameOverState
@@ -168,12 +171,13 @@ class IdleState extends State {
             scene.creatureFSM.transition('gameOver')
         }
 
-        if (creature.happiness > 80) { 
+
+        if (Phaser.Input.Keyboard.JustDown(scene.hKey) || (creature.happiness > 80)) { 
             scene.creatureFSM.transition('win')
         }
 
         //monitor all stats, if any stat dips below a given threshhold, alert the player using the need state
-        if (((creature.hunger < 30) || (creature.sleep < 30) || (creature.happiness < 30)) && creature.health != 0){
+        if (((creature.hunger <= 40) || (creature.sleep < 30) || (creature.happiness < 30)) && creature.health != 0){
             scene.creatureFSM.transition('need', creature.getLowestStat())
         }
     }
@@ -213,8 +217,8 @@ class SleepingState extends State {
 }
 class EatingState extends State {
     enter(scene, creature) {
-        if ((creature.hunger + 25) < 100){
-            creature.addToStat('hunger', 25)
+        if ((creature.hunger + 60) < 100){
+            creature.addToStat('hunger', 60)
             creature.busy = true
             creature.play('eating')
             console.log('eat')
@@ -273,3 +277,5 @@ class WinState extends State {
 //Reveal - reveal who won, and add points
 
 //End State
+
+//need fsm for sleep mode
