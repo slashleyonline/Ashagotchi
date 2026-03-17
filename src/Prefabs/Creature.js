@@ -76,29 +76,15 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.addToStat('happiness', -1)
 
         this.resetHealth()
-        if (this.health <= 0) {
-            console.log('game over!')
-        }
     }
 
     resetHealth() {
         this.health = Math.ceil((this.happiness + this.sleep + this.hunger) / 3)
     }
 
-    incrementTime() {
-        happiness -= 1
-        sleep -= 1
-        hunger -= 1
-
-        this.health = (this.happiness + this.sleep + this.hunger) / 3
-        if (this.health <= 0) {
-            console.log('game over!')
-        }
-    }
-
     actionState(stat) {
         if ((this.parentScene.rpsFSM.state != 'decision') && (this.parentScene.sleepFSM.state != 'awake')) {
-            //If the FSM is in idle or need state, move to eating state.
+            //If the FSM is in idle or need state, move to whichever action is needed.
             if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
                 if (stat == 'hunger') {
                     this.parentScene.creatureFSM.transition('eating')
@@ -119,8 +105,6 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
 
     addToStat(stat, amnt) {
         if (!this.busy) {
-            console.log('adding ' + amnt + ' to ' + stat)
-            //console.log('FSM state: ', this.parentScene.creatureFSM.state)
             if ((stat == 'hunger') && ( (this.hunger + amnt) < 100) && !(this.health <= 0)) {
                 if (amnt < 0 && this.hunger <=0) {
                     return
@@ -246,9 +230,6 @@ class SleepingState extends State {
         scene.sleepFSM.transition('sleeping')
         game.sound.mute = true
     }
-    update() {
-        console.log(creatureFSM.state)
-    }
 }
 class EatingState extends State {
     enter(scene, creature) {
@@ -256,7 +237,6 @@ class EatingState extends State {
             creature.addToStat('hunger', 60)
             creature.busy = true
             creature.play('eating')
-            console.log('eat')
         
             creature.on('animationcomplete', () => {
                 creature.thoughtsVisible('hunger', false)
@@ -304,9 +284,6 @@ class WinState extends State {
         scene.sound.play('winGame')
     }
 }
-
-//need new fsm for playing rock paper scissors
-
 //not playing, default state
 
 class DisabledState extends State {
@@ -318,7 +295,6 @@ class DisabledState extends State {
 //Deciding - prompting the player to pick an option
 class DecisionState extends State {
     enter(scene, creature) {
-        console.log('huh')
         //make icons for choices visible
         creature.play('rockpaper')
 
@@ -342,50 +318,56 @@ class RevealState extends State {
         let choices = ['rock', 'paper', 'scissors']
         let index = Math.floor(Math.random() * 3)
 
-        console.log('index: ', index)
-
         let ashChoice = choices[index]
 
+        //convert stat string to rock paper scissors choice
         if (choice == 'hunger') {
             choice= 'rock'
         }
         else if (choice == 'happiness') {
-            choice= 'paper'
+            choice= 'scissors'
         }
         else {
-            choice = 'scissors'
+            choice = 'paper'
         }
 
         //compare player's choice with random choice
-        console.log(choice, ' - ', ashChoice)
-
         let result = this.compareChoices(choice, ashChoice)
 
+        scene.ashIcon = scene.add.image(game.CENTER_X  - 100, game.CENTER_Y  - 40, ashChoice + 'Icon')
+        scene.ashIcon.scale = 3
+        
+        creature.play('idle', true)
+
         creature.addToStat('happiness', result)
+        
+        scene.resultIcon = ''
 
         if (result == 5) {
-            console.log('tie game!')
+            scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'tie')
+
         }
         else if (result == 0 ) {
-            console.log('you lose!')
+            scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'youLose')
         }
         else {
-            console.log('you win!')
+            scene.resultIcon = scene.add.image(game.CENTER_X, game.CENTER_Y, 'youWin')
         }
-
-        this.destroyIcons(scene)
-
         game.sound.mute = false
-        scene.rpsFSM.transition('disabled')
-        scene.creatureFSM.transition('idle')
+
+        setTimeout(() => {
+            this.destroyIcons(scene)
+            scene.rpsFSM.transition('disabled')
+            scene.creatureFSM.transition('idle')
+        }, 3000);
     }
     compareChoices(choice, ashChoice){
         if (choice == ashChoice) {
-            return 5
+            return 10
         }
         else if (choice == 'rock') {
             if (ashChoice == 'paper') {
-                return 0
+                return 5
             }
             else {
                 return 25
@@ -393,7 +375,7 @@ class RevealState extends State {
         }
         else if (choice == 'paper') {
             if (ashChoice == 'scissors') {
-                return 0
+                return 5
             }
             else {
                 return 25
@@ -401,7 +383,7 @@ class RevealState extends State {
         }
         else {
             if (ashChoice == 'rock') {
-                return 0
+                return 5
             }
             else {
                 return 25
@@ -412,6 +394,8 @@ class RevealState extends State {
         scene.rockIcon.destroy()
         scene.paperIcon.destroy()
         scene.scissorsIcon.destroy()
+        scene.ashIcon.destroy()
+        scene.resultIcon.destroy()
     }
 }
 
