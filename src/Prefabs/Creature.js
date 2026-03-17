@@ -7,18 +7,18 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         this.parentScene.add.existing(this)
         this.scale = 0.4
 
-        this.health = 0
+        this.health = 50
         //overall health of the creature
         //the average of all stats
         //if it reaches 0, game over
 
-        this.happiness = 0
+        this.happiness = 31
         //increases gradually but the rate of increasing is maintained by playing with creature
 
-        this.sleep = 0
+        this.sleep = 32
         //refilled by sleeping
         
-        this.hunger = 0
+        this.hunger = 33
         //refilled by eating
 
 
@@ -136,12 +136,15 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
         let min = Math.min(this.hunger, this.sleep, this.happiness)
 
         if (this.hunger == min) {
+            this.parentScene.sound.play('hungry', { volume: 0.1 })
             return 'hunger'
         }
         else if (this.sleep == min) {
+            this.parentScene.sound.play('sleepy', {volume: 0.4})
             return 'sleep'
         }
         else if (this.happiness == min) {
+            this.parentScene.sound.play('playful', {volume: 0.2})
             return 'happiness'
         }
     }
@@ -225,5 +228,6 @@ class GameOverState extends State {
         creature.play('dead', true)
 
         scene.add.image(game.CENTER_X, game.CENTER_Y - 55, 'gameOverText')
+        scene.sound.play('gameOver')
     }
 }

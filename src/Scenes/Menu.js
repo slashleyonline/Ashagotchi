@@ -53,6 +53,11 @@ class Menu extends Phaser.Scene {
         this.load.image('background', 'background/FiRoom.png')
         this.load.image('box_front', 'Box/box_front_sprite.png')
         this.load.image('shell', 'consoleShellRender.png')
+
+        this.load.audio('gameOver', 'Sounds/gameOver.wav')
+        this.load.audio('hungry', 'Sounds/Hungry.wav')
+        this.load.audio('playful', 'Sounds/Playful.wav')
+        this.load.audio('sleepy', 'Sounds/Sleepy.wav')
         this.load.audio('press', 'Sounds/Press.wav')
     }
 

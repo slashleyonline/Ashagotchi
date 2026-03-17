@@ -14,7 +14,7 @@ class Play extends Phaser.Scene {
         ash.init()
 
         let quitButton = new MenuButton(this, 540, 20, 'quitMenuButton')
-        quitButton.scale = 0.6
+        quitButton.scale = 0.55
 
         //set of buttons that the player presses to interact with the creature.
         //inefficient method of assigning scale, will change soon.
