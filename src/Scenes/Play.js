@@ -107,6 +107,7 @@ class Play extends Phaser.Scene {
     //amnt should be a positive integer value.
     replenishStat(stat, amnt) {
         this.creature.addToStat(stat, amnt)
+        this.setStatText()
     }
 
     setStatText() {
