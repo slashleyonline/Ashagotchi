@@ -56,7 +56,7 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             disabled: new DisabledState(),
             decision: new DecisionState(),
             reveal: new RevealState()
-        })
+        }, [scene, this])
     }
 
     init() {
@@ -90,17 +90,23 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
     }
 
     actionState(stat) {
-        //If the FSM is in idle or need state, move to eating state.
-        if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
-            if (stat == 'hunger') {
-                this.parentScene.creatureFSM.transition('eating')
+        if (rpsFSM.state != 'decision'){
+            //If the FSM is in idle or need state, move to eating state.
+            if (this.parentScene.creatureFSM.state == 'idle' || this.parentScene.creatureFSM.state == 'need') {
+                if (stat == 'hunger') {
+                    this.parentScene.creatureFSM.transition('eating')
+                }
+                else if (stat == 'sleep') {
+                    this.parentScene.creatureFSM.transition('sleeping')
+                }
+                else {
+                    this.parentScene.creatureFSM.transition('playing')
+                }
             }
-            else if (stat == 'sleep') {
-                this.parentScene.creatureFSM.transition('sleeping')
-            }
-            else {
-                this.parentScene.creatureFSM.transition('playing')
-            }
+        }
+        //if the rock paper scissors game is being played, transition to the reveal with a given answer.
+        else {
+            this.parentScene.rpsFSM.transition('reveal', stat)
         }
     }
 
@@ -155,17 +161,34 @@ class Creature extends Phaser.Physics.Arcade.Sprite {
             return 'happiness'
         }
     }
+
+    thoughtsVisible(bool) {
+        this.thoughtBubble.visible = bool
+
+        this.hungryIcon.visible = bool
+        this.playIcon.visible = bool
+        this.sleepyIcon.visible = bool
+    }
+
+    thoughtVisible(bool, type) {
+        this.thoughtBubble.visible = bool
+        if (type == 'hunger') {
+            this.hungryIcon.visible = bool
+        }
+        else if (type == 'happiness') {
+            this.playIcon.visible = bool
+        }
+        else {
+            this.sleepyIcon.visible = bool
+        }
+    }
 }
 
 class IdleState extends State {
     enter(scene, creature) {
         creature.play('idle', true)
         creature.busy = false
-        creature.thoughtBubble.visible = false
-
-        creature.hungryIcon.visible = false
-        creature.playIcon.visible = false
-        creature.sleepyIcon.visible = false
+        creature.thoughtsVisible(false)
 
         scene.hKey = scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.H);
 
@@ -190,7 +213,7 @@ class IdleState extends State {
 class NeedState extends State {
     enter(scene, creature, needType) {
         creature.play('needing', true)
-        creature.thoughtBubble.visible = true
+        creature.thoughtVisible(true, needType)
 
         if (needType == 'hunger') {
             creature.hungryIcon.visible = true
@@ -209,6 +232,8 @@ class NeedState extends State {
 }
 class SleepingState extends State {
     enter(scene, creature) {
+        creature.thoughtsVisible(false)
+
         console.log('sleeping')
         creature.busy = true
 
@@ -229,6 +254,7 @@ class EatingState extends State {
             console.log('eat')
         
             creature.on('animationcomplete', () => {
+                creature.thoughtsVisible('hunger', false)
                 scene.creatureFSM.transition('idle')
             })
         }
@@ -242,9 +268,10 @@ class EatingState extends State {
 }
 class PlayingState extends State {
     enter(scene, creature) {
+        creature.thoughtBubble.visible = false
+
         creature.busy = true
-        creature.addToStat('happiness', 25)
-        scene.creatureFSM.transition('idle', creature.getLowestStat())
+        scene.rpsFSM.transition('decision')
     }
 }
 class GameOverState extends State {
@@ -278,22 +305,73 @@ class WinState extends State {
 //not playing, default state
 
 class DisabledState extends State {
-    enter(scene, game) {
-
+    enter(scene, creature) {
+        
     }
 }
 
 //Deciding - prompting the player to pick an option
 class DecisionState extends State {
-    enter(scene, game) {
-
+    enter(scene, creature) {
+        console.log('huh')
+        //make icons for choices visible
+        creature.play('rockpaper')
     }
 }
 
 //Reveal - reveal who won, and add points, reveal prompt to return to disabledState
 class RevealState extends State {
-    enter(scene, game) {
+    enter(scene, creature, choice) {
+        let choices = ['rock', 'paper', 'scissors']
+        let index = Math.floor(Math.random * 3)
 
+        let ashChoice = choices[index]
+
+        if (choice == 'hunger') {
+            choice= 'rock'
+        }
+        else if (choice== 'happiness') {
+            choice= 'paper'
+        }
+        else {
+            choice = 'scissors'
+        }
+
+        //compare player's choice with random choice
+
+        let result = compareChoices(choice)
+
+        creature.addToStat('happiness', result)
+
+    }
+    compareChoices(choice){
+        if (choice == ashChoice) {
+            return 5
+        }
+        else if (choice == 'rock') {
+            if (ashChoice == 'paper') {
+                return 0
+            }
+            else {
+                return 25
+            }
+        }
+        else if (choice == 'paper') {
+            if (ashChoice == 'scissors') {
+                return 0
+            }
+            else {
+                return 25
+            }
+        }
+        else {
+            if (ashChoice == 'rock') {
+                return 0
+            }
+            else {
+                return 25
+            }
+        }
     }
 }
 

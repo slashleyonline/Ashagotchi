@@ -59,6 +59,10 @@ class Menu extends Phaser.Scene {
             frameWidth: 655,
             frameHeight: 548
         })
+        this.load.spritesheet('rockpaper', 'Ash/rockpaper.png', {
+            frameWidth: 655,
+            frameHeight: 548
+        })
 
         this.load.image('thoughtBubble', 'UI/thoughtBubble.png')
         this.load.image('hungryThought', 'UI/burger.png')
@@ -99,6 +103,15 @@ class Menu extends Phaser.Scene {
                 start: 0,
                 end:0
             })
+        })
+        this.anims.create({
+            key: 'rockpaper',
+            frameRate: 3,
+            repeat: -1,
+            frames: this.anims.generateFrameNumbers('rockpaper', {
+                start: 0,
+                end:1
+            })            
         })
         this.anims.create({
             key: 'winDance',
